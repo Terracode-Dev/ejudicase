@@ -97,7 +97,7 @@ class MongoManager {
   }
 }
 
-//Auth Manager
+//Auth Manager [Mongo and FireStore] TODO: use this.methods inside
 class AuthManager {
   final mongo.Db mongoDb;
   final FirebaseFirestore firestore;
