@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'Util/dbManager.dart';
 import 'Screens/profile.dart';
+import 'Util/resources.dart';
 
 void main() {
 
@@ -46,13 +47,8 @@ class LoginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Image.asset('assets/images/lawyerAppLogo.webp',
-            width: MediaQuery.of(context).size.width * 0.1, // 50% of screen width
-            height: MediaQuery.of(context).size.height * 0.1, // 30% of screen height
-            fit: BoxFit.cover, // Cover the widget bounds
-             ),
-               // Replace with your logo widget
-              SizedBox(height: 20),
+              ImageStack["lawLogoHome"] ?? SizedBox(),
+
               Text(
                 'Login',
                 textAlign: TextAlign.center,
@@ -63,7 +59,9 @@ class LoginScreen extends StatelessWidget {
                 controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: 'Username',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
                 ),
               ),
               SizedBox(height: 20),
@@ -71,7 +69,9 @@ class LoginScreen extends StatelessWidget {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
               ),
               SizedBox(height: 20),
@@ -89,9 +89,9 @@ class LoginScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => Profile()),
                   );
                 },
-                child: Text('Login'),
+                child: Text('Login', style: TextStyle(color: ColourStack["text_1"])),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  backgroundColor: MaterialStateProperty.all(Colors.indigo),
                 ),
               ),
               TextButton(
