@@ -1,17 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-//import 'Util/dbManager.dart';
+import 'Util/dbManager.dart';
 import 'Screens/profile.dart';
+import 'Screens/login.dart';
+//import 'Screens/RegisterScreen.dart';
 import 'Util/resources.dart';
 
-void main() {
+void main() async  {
 
-  // //FIrebase Initalization TODO: uncomment follwing
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  //DB tools initializing
+  await fbAdmin.initializeFirebase();
+  //--------------------------------
 
-
-
-  runApp(MyApp());
+  //runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -27,89 +28,133 @@ class MyApp extends StatelessWidget {
         // Define the default font family.
         fontFamily: 'Font_1', // Replace with your custom font by adding it to the pubspec.yaml
       ),
-      home: LoginScreen(),
+      home: HomeScreen(),
     );
   }
 }
 
-class LoginScreen extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
 
   final TextEditingController _usernameController = TextEditingController();
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              ImageStack["lawLogoHome"] ?? SizedBox(),
 
-              Text(
-                'Login',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _usernameController,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+        leading: Icon(Icons.menu), // Hamburger menu icon
+        actions: [
+          Icon(Icons.settings), // Settings or action icon
+        ],
+      ),
+      body: SingleChildScrollView( // Allows for scrolling if content doesn't fit
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  hintText: 'Search',
+                  prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0)
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(Icons.home),
+                  Icon(Icons.date_range),
+                  Icon(Icons.person),
+                  Icon(Icons.notifications),
+                ],
               ),
-              SizedBox(height: 20),
-              TextButton(
-                onPressed: () {
-                  // Add Forgot Password Functionality
-                },
-                child: Text('Forgot Password?'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  print(_usernameController.text);// Add Login Functionality
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Profile()),
-                  );
-                },
-                child: Text('Login', style: TextStyle(color: ColourStack["text_1"])),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.indigo),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Add Register Functionality
-                },
-                child: Text('Don\'t have an account? Register'),
-              ),
-              SizedBox(height: 20),
-              Text(
-                'version 0.1',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Appointments', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ),
+            // Placeholder for appointments list
+            ...List.generate(3, (index) => ListTile(
+              leading: Icon(Icons.circle),
+              title: Text('Appointment ${index + 1}'),
+              subtitle: Text('Subtitle text here'),
+            )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Recently', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ),
+
+    ElevatedButton(
+            onPressed: () {
+              print(_usernameController.text);// Add Login Functionality
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Profile()),
+              );
+            },
+            child: Text('Login', style: TextStyle(color: ColourStack["text_1"])),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.indigo),
+            )),
+
+            // Placeholder for recently section
+            ...List.generate(3, (index) => ListTile(
+              leading: Icon(Icons.circle),
+              title: Text('Recent Item ${index + 1}'),
+              subtitle: Text('Subtitle text here'),
+            ),
+
+
+            ),
+          ],
         ),
       ),
+
+
+
+
+
+      //---------------ORIGINAL-----------------
+
+      //   appBar: AppBar(
+      //   title: Text("E JUDICASE" ,  textAlign: TextAlign.center,
+      //     style: TextStyle( color: ColourStack["primary"],fontSize: 24, fontWeight: FontWeight.w900),)
+      //   ),
+      // body: Center(
+      //   child: Column(
+      //     children: [
+      //       Text("this is a sample text"),
+      //       ElevatedButton(
+      //         onPressed: () {
+      //           print(_usernameController.text);// Add Login Functionality
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(builder: (context) => Profile()),
+      //           );
+      //         },
+      //         child: Text('Login', style: TextStyle(color: ColourStack["text_1"])),
+      //         style: ButtonStyle(
+      //           backgroundColor: MaterialStateProperty.all(Colors.indigo),
+      //         ),
+      //       )
+      //     ],
+      //   ),
+      // )
     );
   }
 }
+
+
+
+
+
+
+
+

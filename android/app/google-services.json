@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "97889853694",
+    "project_id": "lawyerapp-aa1ae",
+    "storage_bucket": "lawyerapp-aa1ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97889853694:android:b694affb3121dd361205af",
+        "android_client_info": {
+          "package_name": "com.example.mapp_module"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYh6-3D7E671Dlh-JtV3g2WVcopadDpwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

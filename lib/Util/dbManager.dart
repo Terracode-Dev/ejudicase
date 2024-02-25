@@ -2,23 +2,44 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:bcrypt/bcrypt.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import '../firebase_options.dart';
+import 'package:mongo_dart/mongo_dart.dart';
+
+//----------- single object to use thrugout
+final FirebaseManager fbAdmin = FirebaseManager();
+final AuthManager authAdmin = AuthManager(fbStore = fbAdmin.db)
+
+String hashPassword(String pass) {
+  return BCrypt.hashpw(pass, BCrypt.gensalt());
+}
 
 class FirebaseManager {
-  FirebaseManager() {
-    _initializeFirebase();
-  }
 
-  // Private method to initialize Firebase
-  Future<void> _initializeFirebase() async {
+  static FirebaseFirestore db = FirebaseFirestore.instance; //initial intializing with empty instanc e
+
+  Future<void> initializeFirebase() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    db = FirebaseFirestore.instance;
   }
 
-  // Method to add or update data
-  Future<void> storeData(String collectionPath, String docId, Map<String, dynamic> data) async {
+  Future<int> getDocCount(String collectionName) async {
     try {
-      await FirebaseFirestore.instance.collection(collectionPath).doc(docId).set(data, SetOptions(merge: true));
+      QuerySnapshot querySnapshot = await db.collection(collectionName).get();
+      int count = querySnapshot.docs.length;
+      return count;
+    } catch (e) {
+      print('Error getting document count: $e');
+      return 0; // Return 0 or consider rethrowing the exception depending on your error handling strategy
+    }
+  }
+  // Method to add or update data
+  Future<void> storeData(String collection, Map<String, dynamic> data) async {
+    try {
+      data["id"] = await getDocCount(collection) + 1;
+      DocumentReference docRef = await db.collection(collection).add(data);
       print('Data stored/updated successfully');
     } catch (e) {
       print('Error storing/updating data: $e');
@@ -28,7 +49,7 @@ class FirebaseManager {
   // Method to retrieve data by document ID
   Future<DocumentSnapshot> retrieveData(String collectionPath, String docId) async {
     try {
-      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection(collectionPath).doc(docId).get();
+      DocumentSnapshot documentSnapshot = await db.collection(collectionPath).doc(docId).get();
       print('Data retrieved successfully');
       return documentSnapshot;
     } catch (e) {
@@ -38,11 +59,16 @@ class FirebaseManager {
   }
 
   // Example method to retrieve all documents from a collection
-  Future<QuerySnapshot> retrieveAllData(String collectionPath) async {
+  Future<Map<String, Map<String, dynamic>>> retrieveAllData(String collectionPath) async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection(collectionPath).get();
+      QuerySnapshot<Object?> querySnapshot = await db.collection(collectionPath).get();
+      Map<String, Map<String, dynamic>> data = {};
       print('All data retrieved successfully');
-      return querySnapshot;
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> recievedData = doc.data() as Map<String, dynamic>;
+        data[recievedData["id"] as String] = recievedData; // output -> map ekk (1)
+      }
+      return data;
     } catch (e) {
       print('Error retrieving all data: $e');
       rethrow;
@@ -62,7 +88,7 @@ class MongoManager {
 
   // Method to initialize MongoDB connection
   Future<void> connect() async {
-    db = Db(connectionString);
+    var db = Db(connectionString);
     await db.open();
     print('MongoDB connected');
   }
@@ -99,18 +125,17 @@ class MongoManager {
 
 //Auth Manager [Mongo and FireStore] TODO: use this.methods inside
 class AuthManager {
-  final mongo.Db mongoDb;
-  final FirebaseFirestore firestore;
+  final Db? mongoDb;
+  final FirebaseFirestore? firestore;
 
-  AuthManager({
-    required this.mongoDb,
-    required this.firestore,
-  });
+  AuthManager({Db? mongo, FirebaseFirestore? fbStore})
+      : mongoDb = mongo,
+        firestore = fbStore;
 
   Future<bool> mongoAuth(String urnm, String pass) async {
     try {
-      var collection = mongoDb.collection('user');
-      var user = await collection.findOne(mongo.where.eq('username', urnm));
+      DbCollection? collection = mongoDb?.collection('user');
+      var user = await collection?.findOne(where.eq('username', urnm));
       if (user != null && BCrypt.checkpw(pass, user['password'])) {
         return true;
       }
@@ -123,9 +148,9 @@ class AuthManager {
 
   Future<bool> firebaseAuth(String urnm, String pass) async {
     try {
-      var collection = firestore.collection('user');
-      var querySnapshot = await collection.where('username', isEqualTo: urnm).get();
-      var user = querySnapshot.docs.first.data();
+      CollectionReference<Map<String, dynamic>>? collection = firestore?.collection('user');
+      var querySnapshot = await collection?.where('username', isEqualTo: urnm).get();
+      var user = querySnapshot?.docs.first.data();
       if (user != null && BCrypt.checkpw(pass, user['password'])) {
         return true;
       }
@@ -136,18 +161,16 @@ class AuthManager {
     }
   }
 
-  String hashPassword(String pass) {
-    return BCrypt.hashpw(pass, BCrypt.gensalt());
-  }
+
 
   Future<void> createUserInMongo(Map<String, dynamic> userDetails) async {
     userDetails['password'] = hashPassword(userDetails['password']);
-    await mongoDb.collection('user').insert(userDetails);
+    await mongoDb?.collection('user').insert(userDetails);
   }
 
   Future<void> createUserInFirestore(Map<String, dynamic> userDetails) async {
     userDetails['password'] = hashPassword(userDetails['password']);
-    await firestore.collection('user').add(userDetails);
+    await firestore?.collection('user').add(userDetails);
   }
 }
 
