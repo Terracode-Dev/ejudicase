@@ -22,17 +22,22 @@ class Profile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile"),
+        backgroundColor: ColourStack["black"],
 
       ),
       body: Container(
-
           //padding: Padding(),
           child : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            //mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               //getImage(type: imgType.local, sourcePath: "assets/images/lawyerAppLogo.png" , width: 70, height: 70),
               ImageStack["lawLogoHome"] ?? SizedBox(),
+              Container(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
               Text(TextContent["user"] as String),
               Row(
                 children: [

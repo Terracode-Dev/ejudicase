@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'Util/dbManager.dart';
+import 'dart:ffi';
 import 'Screens/profile.dart';
 import 'Screens/login.dart';
 //import 'Screens/RegisterScreen.dart';
@@ -10,9 +11,11 @@ void main() async  {
 
   //DB tools initializing
   await fbAdmin.initializeFirebase();
+  Map <int, Map<dynamic, dynamic>> resultSheet = await fbAdmin.retrieveAllData("users") as Map<int, Map<dynamic, dynamic>>;
   //--------------------------------
+  // print(resultSheet[1]);
 
-  //runApp(MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -78,14 +81,26 @@ class HomeScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Appointments', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ),
+              child: Text("hell",
+                style : TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),),
+
             // Placeholder for appointments list
-            ...List.generate(3, (index) => ListTile(
-              leading: Icon(Icons.circle),
-              title: Text('Appointment ${index + 1}'),
-              subtitle: Text('Subtitle text here'),
-            )),
+            ...List.generate(3, (index) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child : Container(
+                    alignment: Alignment.center,
+                    child : Container(
+                    child : ListTile(
+                    leading: Icon(Icons.circle),
+                    title: Text('Appointment ${index + 1}'),
+                    subtitle: Text('Subtitle text here'),
+            ),
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey), // Customize border color and width here
+                    borderRadius: BorderRadius.circular(8), // Optional: if you want rounded corners
+                )
+
+            )))),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text('Recently', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -96,7 +111,7 @@ class HomeScreen extends StatelessWidget {
               print(_usernameController.text);// Add Login Functionality
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Profile()),
+                MaterialPageRoute(builder: (context) => LoginScreen()),
               );
             },
             child: Text('Login', style: TextStyle(color: ColourStack["text_1"])),

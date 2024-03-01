@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 //----------- single object to use thrugout
 final FirebaseManager fbAdmin = FirebaseManager();
-final AuthManager authAdmin = AuthManager(fbStore = fbAdmin.db)
+final AuthManager authAdmin = AuthManager(fbStore : FirebaseManager.db);
 
 String hashPassword(String pass) {
   return BCrypt.hashpw(pass, BCrypt.gensalt());
@@ -59,14 +61,17 @@ class FirebaseManager {
   }
 
   // Example method to retrieve all documents from a collection
-  Future<Map<String, Map<String, dynamic>>> retrieveAllData(String collectionPath) async {
+  Future<Map<int, Map<dynamic, dynamic>>> retrieveAllData(String collectionPath) async {
     try {
       QuerySnapshot<Object?> querySnapshot = await db.collection(collectionPath).get();
-      Map<String, Map<String, dynamic>> data = {};
+      Map<int, Map<dynamic, dynamic>> data = {};
       print('All data retrieved successfully');
       for (var doc in querySnapshot.docs) {
-        Map<String, dynamic> recievedData = doc.data() as Map<String, dynamic>;
-        data[recievedData["id"] as String] = recievedData; // output -> map ekk (1)
+        print(doc.data()); //TODO: doc sata serialization error... fix it
+
+        Map<dynamic, dynamic> recievedData = doc.data() as Map<dynamic, dynamic>;
+        //print(recievedData["id"]);
+        data[recievedData["id"]] = recievedData; // output -> map ekk (1)
       }
       return data;
     } catch (e) {

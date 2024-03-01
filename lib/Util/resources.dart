@@ -9,4 +9,5 @@ Map<String,Image> ImageStack   =  {
 Map<String,Color> ColourStack = {
   "primary" : Colors.indigo,
   "text_1" : Colors.white,
+  "black" : Colors.black,
 };
