@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../Util/tools.dart';
 import '../Util/resources.dart';
+import '../main.dart';
+
 
 
 Widget circularNetworkImage(String imageUrl, imgType imgtype) {
@@ -14,10 +16,9 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    var TextContent =  {
-        "user" : "Daneil Pushpakumara",
-        "level" : 4
-    };
+    var TextContent =  resultSheet[3];
+
+    String name = TextContent?["name"];
 
     return Scaffold(
       appBar: AppBar(
@@ -33,15 +34,18 @@ class Profile extends StatelessWidget {
             children: [
               //getImage(type: imgType.local, sourcePath: "assets/images/lawyerAppLogo.png" , width: 70, height: 70),
               ImageStack["lawLogoHome"] ?? SizedBox(),
-              Container(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              Text(TextContent["user"] as String),
+              Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Divider(
+                height: 20,
+                thickness: 2,
+                color: Colors.black,
+              ),),
+
+              Text(name),
               Row(
                 children: [
-                  Text(TextContent["level"].toString()),
+                  Text("aaw"),
                 ],
               )
             ],

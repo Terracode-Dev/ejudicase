@@ -7,11 +7,13 @@ import 'Screens/login.dart';
 //import 'Screens/RegisterScreen.dart';
 import 'Util/resources.dart';
 
+Map <int, Map<dynamic, dynamic>> resultSheet = {};
+
 void main() async  {
 
   //DB tools initializing
   await fbAdmin.initializeFirebase();
-  Map <int, Map<dynamic, dynamic>> resultSheet = await fbAdmin.retrieveAllData("users") as Map<int, Map<dynamic, dynamic>>;
+  resultSheet = await fbAdmin.retrieveAllData("users") as Map<int, Map<dynamic, dynamic>>;
   //--------------------------------
   // print(resultSheet[1]);
 
