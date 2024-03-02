@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp( Search());
+void main() => runApp( NotificationSection());
 
-class Search extends StatelessWidget {
+class NotificationSection extends StatelessWidget {
 
-  static const appTitle = 'Home';
+  static const appTitle = 'Notification';
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: appTitle,
-      home: SearchAppBar(title: appTitle),
+      home: Notification(title: appTitle),
     );
   }
 }
 
-class SearchAppBar extends StatefulWidget {
-  const SearchAppBar({super.key, required this.title});
+class Notification extends StatefulWidget {
+  const Notification({super.key, required this.title});
   final String title;
   @override
-  State<SearchAppBar> createState() => _MyHomePageState();
+  State<Notification> createState() => _Notification();
 }
 
-class _MyHomePageState extends State<SearchAppBar> {
+class _Notification extends State<Notification> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,42 +44,41 @@ class _MyHomePageState extends State<SearchAppBar> {
           actions: [
             IconButton(onPressed: ()=>{},
                 icon: const Icon(
-                  Icons.account_circle_outlined,
+                  Icons.notifications_on,
                   color: Colors.white,)
             )
           ],
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(100.0),
+            preferredSize: Size.fromHeight(80.0),
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SearchAnchor(
-                  builder: (BuildContext context, SearchController controller) {
-                    return SearchBar(
-                      controller: controller,
-                      padding: const MaterialStatePropertyAll<EdgeInsets>(
-                          EdgeInsets.symmetric(horizontal: 16.0)),
-                      onTap: () {
-                        controller.openView();
-                      },
-                      onChanged: (_) {
-                        controller.openView();
-                      },
-                      leading: const Icon(Icons.search),
-                    );
-                  }, suggestionsBuilder:
-                  (BuildContext context, SearchController controller) {
-                return List<ListTile>.generate(5, (int index) {
-                  final String item = 'item $index';
-                  return ListTile(
-                    title: Text(item),
-                    onTap: () {
-                      setState(() {
-                        controller.closeView(item);
-                      });
-                    },
-                  );
-                });
-              }),
+              padding: const EdgeInsets.all(18.0),
+              child: Row(
+                children: [
+                  Container(
+                    child: Icon(Icons.account_circle,
+                      color: Colors.white,
+                      size: 55.0,
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Text("Profile",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 25.0,
+                        ),
+                      ),
+                      Text("Data",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -117,13 +116,7 @@ class _MyHomePageState extends State<SearchAppBar> {
         ),
         body: const Column(
           children: [
-            Text('Result',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22.0,
-              ),
-            ),
-            SearchResults(),
+            NotifiBar(),
           ],
         ),
       ),
@@ -131,14 +124,14 @@ class _MyHomePageState extends State<SearchAppBar> {
   }
 }
 
-class SearchResults extends StatefulWidget {
-  const SearchResults({super.key});
+class NotifiBar extends StatefulWidget {
+  const NotifiBar({super.key});
 
   @override
-  State<SearchResults> createState() => _SearchResultsState();
+  State<NotifiBar> createState() => _NotifiBar();
 }
 
-class _SearchResultsState extends State<SearchResults> {
+class _NotifiBar extends State<NotifiBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -164,11 +157,14 @@ class _SearchResultsState extends State<SearchResults> {
           // Title text
           Expanded(
             child: Text(
-              "Hi hello",
+              "Notification",
               style: const TextStyle(fontSize: 16.0,color: Colors.white),
             ),
           ),
-          Icon(Icons.favorite,
+          Icon(Icons.read_more,
+            color: Colors.white,
+          ),
+          Icon(Icons.not_interested_rounded,
             color: Colors.white,
           ),
 
