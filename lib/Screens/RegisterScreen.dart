@@ -12,8 +12,15 @@ Map<String, TextEditingController> dataSheet = {
 };
 
 
-class RegisterScreen extends StatelessWidget {
-  @override
+class RegisterScreen extends StatefulWidget {
+  _registerScreenState createState() => _registerScreenState();
+}
+
+class _registerScreenState extends State<RegisterScreen> {
+
+
+
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -112,7 +119,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  print(dataSheet["name"].text);
+
                 },
                 child: Text('Next'),
               ),

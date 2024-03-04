@@ -1,5 +1,4 @@
-import 'dart:ffi';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,17 +6,77 @@ import 'package:bcrypt/bcrypt.dart';
 import '../firebase_options.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-//----------- single object to use thrugout
+//----------- single object to use thrugout after imports---------------
 final FirebaseManager fbAdmin = FirebaseManager();
-final AuthManager authAdmin = AuthManager(fbStore : FirebaseManager.db);
+final AuthManager authAdmin = AuthManager();
+
+//-----------Object Tools End--------------
 
 String hashPassword(String pass) {
   return BCrypt.hashpw(pass, BCrypt.gensalt());
 }
 
+
+//------AUTH-----
+//Auth Manager [Mongo and FireStore] TODO: use this.methods inside
+class AuthManager {
+
+  static FirebaseAuth fbAuth = FirebaseAuth.instance;
+
+  Future<int> signInUser({required String emailAddr, required String Passwd }) async {
+    try {
+      final credential = await fbAuth.signInWithEmailAndPassword(
+          email: emailAddr,
+          password: Passwd
+      );
+      return 1;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+        return 0;
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+        return -1;
+      }
+      return 0;
+
+    }
+
+  }
+
+  Future<void> signOutUser () async {
+    await fbAuth.signOut();
+  }
+
+  Future<void> createUser ({required String type , required String emailAddress ,required String password ,required Map<String, dynamic> dataSheet }) async {
+    try {
+      final credential = await fbAuth
+          .createUserWithEmailAndPassword(
+        email: emailAddress,
+        password: password,
+      );
+
+      print("USER created");
+      await fbAdmin.storeData(type, dataSheet, credential.user!.uid);
+      print("user added and user details added to detail tables");
+
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+}
+//---- FIrebase methods------
 class FirebaseManager {
 
   static FirebaseFirestore db = FirebaseFirestore.instance; //initial intializing with empty instanc e
+
 
   Future<void> initializeFirebase() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -38,13 +97,15 @@ class FirebaseManager {
     }
   }
   // Method to add or update data
-  Future<void> storeData(String collection, Map<String, dynamic> data) async {
+  Future<void> storeData(String collection, Map<String, dynamic> data, String UID) async {
     try {
-      data["id"] = await getDocCount(collection) + 1;
-      DocumentReference docRef = await db.collection(collection).add(data);
-      print('Data stored/updated successfully');
+        db.collection(collection)
+            .doc(UID)
+            .set(data)
+            .onError((e, _) => print("Error writing document: $e"));
+        print('Data stored/updated successfully');
     } catch (e) {
-      print('Error storing/updating data: $e');
+        print('Error storing/updating data: $e');
     }
   }
 
@@ -128,55 +189,6 @@ class MongoManager {
   }
 }
 
-//Auth Manager [Mongo and FireStore] TODO: use this.methods inside
-class AuthManager {
-  final Db? mongoDb;
-  final FirebaseFirestore? firestore;
 
-  AuthManager({Db? mongo, FirebaseFirestore? fbStore})
-      : mongoDb = mongo,
-        firestore = fbStore;
-
-  Future<bool> mongoAuth(String urnm, String pass) async {
-    try {
-      DbCollection? collection = mongoDb?.collection('user');
-      var user = await collection?.findOne(where.eq('username', urnm));
-      if (user != null && BCrypt.checkpw(pass, user['password'])) {
-        return true;
-      }
-      return false;
-    } catch (e) {
-      print('MongoAuth error: $e');
-      return false;
-    }
-  }
-
-  Future<bool> firebaseAuth(String urnm, String pass) async {
-    try {
-      CollectionReference<Map<String, dynamic>>? collection = firestore?.collection('user');
-      var querySnapshot = await collection?.where('username', isEqualTo: urnm).get();
-      var user = querySnapshot?.docs.first.data();
-      if (user != null && BCrypt.checkpw(pass, user['password'])) {
-        return true;
-      }
-      return false;
-    } catch (e) {
-      print('FirebaseAuth error: $e');
-      return false;
-    }
-  }
-
-
-
-  Future<void> createUserInMongo(Map<String, dynamic> userDetails) async {
-    userDetails['password'] = hashPassword(userDetails['password']);
-    await mongoDb?.collection('user').insert(userDetails);
-  }
-
-  Future<void> createUserInFirestore(Map<String, dynamic> userDetails) async {
-    userDetails['password'] = hashPassword(userDetails['password']);
-    await firestore?.collection('user').add(userDetails);
-  }
-}
 
 

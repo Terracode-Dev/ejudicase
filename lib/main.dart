@@ -13,7 +13,8 @@ void main() async  {
 
   //DB tools initializing
   await fbAdmin.initializeFirebase();
-  resultSheet = await fbAdmin.retrieveAllData("users") as Map<int, Map<dynamic, dynamic>>;
+  //await authAdmin.createUser(type: "Lawyers", emailAddress: "sendinu@mail.com", password: "pass12", dataSheet: {"data": "empty ne"});
+  //print(await authAdmin.signInUser(emailAddr: "sendinu@mail.com", Passwd: "pass123"));
   //--------------------------------
   // print(resultSheet[1]);
 
@@ -83,7 +84,7 @@ class HomeScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("hell",
+              child: Text("Appointments",
                 style : TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),),
 
             // Placeholder for appointments list

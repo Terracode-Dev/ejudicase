@@ -12,7 +12,12 @@
           "package_name": "com.example.mapp_module"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "97889853694-07a5ou61kkhc4n305rsvurgf4dk0op5h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAYh6-3D7E671Dlh-JtV3g2WVcopadDpwM"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97889853694-07a5ou61kkhc4n305rsvurgf4dk0op5h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "97889853694-5ss1ra2cpc5c8v9m54c1p4v6o61qk0t3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mappModule"
+              }
+            }
+          ]
         }
       }
     }

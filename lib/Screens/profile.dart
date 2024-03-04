@@ -16,9 +16,9 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    var TextContent =  resultSheet[3];
-
-    String name = TextContent?["name"];
+    // var TextContent =  resultSheet[3]; //resultsheet is what gets initalized in main
+    //
+    // String name = TextContent?["name"];
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +42,7 @@ class Profile extends StatelessWidget {
                 color: Colors.black,
               ),),
 
-              Text(name),
+              Text("Name comes here"),
               Row(
                 children: [
                   Text("aaw"),
