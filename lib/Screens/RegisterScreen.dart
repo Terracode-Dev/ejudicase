@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:mapp_module/Util/dbManager.dart';
 import 'package:mapp_module/Util/resources.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
@@ -18,11 +19,40 @@ class RegisterScreen extends StatefulWidget {
 
 class _registerScreenState extends State<RegisterScreen> {
 
+  int currentPageIndex = 0;
+  bool _isSwitched = false;
 
 
 @override
   Widget build(BuildContext context) {
     return Scaffold(
+        bottomNavigationBar: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          indicatorColor: Colors.amber,
+          selectedIndex: currentPageIndex,
+          destinations: const <Widget>[
+            NavigationDestination(
+              selectedIcon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Badge(child: Icon(Icons.notifications_sharp)),
+              label: 'Notifications',
+            ),
+            NavigationDestination(
+              icon: Badge(
+                label: Text('2'),
+                child: Icon(Icons.messenger_sharp),
+              ),
+              label: 'Messages',
+            ),
+          ],
+        ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -102,6 +132,47 @@ class _registerScreenState extends State<RegisterScreen> {
               ),
               SizedBox(height: 15),
               Row(
+                children: [
+                  Text('Lawyer  ', style : TextStyle(fontSize: 18, color: Colors.deepPurple, fontWeight: FontWeight.bold)),
+                  Switch(
+                    value: _isSwitched,
+                    onChanged: (value) {
+                      setState(() {
+                        _isSwitched = value;
+                      });
+                    },
+                  )
+                ],
+              ),
+              if (_isSwitched) Column(
+                children: [
+                  TextField(
+                    controller: dataSheet["confirm_passwd"],
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Lawyer Firm',
+                      contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10,),
+                  TextField(
+                    controller: dataSheet["confirm_passwd"],
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Law Certificate Ref',
+                      contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 15),
+              Row(
                 children: <Widget>[
                   Checkbox(
                     value: false,
@@ -119,7 +190,12 @@ class _registerScreenState extends State<RegisterScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
-
+                  //TODO : Add 2 controllers and prepare the DataSheet
+                  if (_isSwitched) {
+                    authAdmin.createUser(type: "Lawyers", emailAddress: emailController.text, password: passwordController.text, dataSheet: dataSheet)
+                  } else {
+                    authAdmin.createUser(type: "users", emailAddress: emailController.text, password: passwordController.text, dataSheet: dataSheet)
+                  }
                 },
                 child: Text('Next'),
               ),
