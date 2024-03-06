@@ -10,6 +10,7 @@ import 'Screens/geoLocator.dart';
 import 'Util/resources.dart';
 import 'Util/recommendEngine.dart';
 
+
 // this list will get recommendations fro homw screen
 late List<Map<String,dynamic>> recommendations;
 
@@ -21,6 +22,9 @@ void main() async  {
   //print("User Cords : [${userLocation.Lattitude} : ${userLocation.Longitude}]");
   //print("cordDiff : ${userLocation.cordDiffernce}");
   recommendations = await RecommendEngine();
+  var searchResults = await SearchEngine("sandhi push");
+
+
   runApp(MyApp());
 }
 
@@ -120,6 +124,7 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => LoginScreen()),
+
               );
             },
             child: Text('Login', style: TextStyle(color: ColourStack["text_1"])),
