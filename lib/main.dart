@@ -10,20 +10,22 @@ import 'Screens/geoLocator.dart';
 import 'Util/resources.dart';
 import 'Util/recommendEngine.dart';
 
-Map <int, Map<dynamic, dynamic>> resultSheet = {};
+// this list will get recommendations fro homw screen
+late List<Map<String,dynamic>> recommendations;
 
 void main() async  {
 
   //DB tools initializing
   await fbAdmin.initializeFirebase();
   await userLocation.inititalizeLocation(); // takes the locatin detials
-  print("User Cords : [${userLocation.Lattitude} : ${userLocation.Longitude}]");
-  print("cordDiff : ${userLocation.cordDiffernce}");
-  await RecommendEngine();
+  //print("User Cords : [${userLocation.Lattitude} : ${userLocation.Longitude}]");
+  //print("cordDiff : ${userLocation.cordDiffernce}");
+  recommendations = await RecommendEngine();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +45,8 @@ class MyApp extends StatelessWidget {
 
 class HomeScreen extends StatelessWidget {
 
+
   final TextEditingController _usernameController = TextEditingController();
-
-
-
-  HomeScreen() {
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,14 +93,14 @@ class HomeScreen extends StatelessWidget {
                 style : TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),),
 
             // Placeholder for appointments list
-            ...List.generate(3, (index) => Padding(
+            ...List.generate(recommendations.length, (index) => Padding(
                 padding: const EdgeInsets.all(8.0),
                 child : Container(
                     alignment: Alignment.center,
                     child : Container(
                     child : ListTile(
                     leading: Icon(Icons.circle),
-                    title: Text('Appointment ${index + 1}'),
+                    title: Text('Name : ${recommendations[index]["name"]}'),
                     subtitle: Text('Subtitle text here'),
             ),
                 decoration: BoxDecoration(

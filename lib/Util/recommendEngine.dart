@@ -5,23 +5,30 @@ import 'package:geolocator/geolocator.dart';
 //this will run when home is laoded for the user...
 Future<List<Map<String,dynamic>>> RecommendEngine() async {
 
-
   List<Map<String,dynamic>> Lawyers = [];
-
+try {
   await FirebaseManager.db.collection("Lawyers")
       .where("Location.Lattitude", isGreaterThan: userLocation.minLattitude)
       .where("Location.Lattitude", isLessThan: userLocation.maxLattitude)
-      .where("Location.Longitude", isGreaterThan: userLocation.minLongitude)
-      .where("Location.Longitude", isLessThan: userLocation.maxLongitude)
       .get().then(
         (querySnapshot) {
       for (var docSnapshot in querySnapshot.docs) {
-        Lawyers.add(docSnapshot.data());
+        var doc = docSnapshot.data();
+        if (doc["Location"]["Longitude"] > userLocation.minLongitude && doc["Location"]["Longitude"] < userLocation.maxLongitude)
+        {Lawyers.add(docSnapshot.data());} else {
+          continue;
+        }
       }
     },
     onError: (e) => print("Error completing: $e"),
   );
-  print(Lawyers);
+
+  //print(Lawyers);
+
+} catch (e) {
+
+  print("Error in recommend Engine - $e");
+}
   return Lawyers;
 }
 
