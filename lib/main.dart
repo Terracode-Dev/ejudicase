@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'Util/dbManager.dart';
 import 'dart:ffi';
 import 'Screens/profile.dart';
 import 'Screens/login.dart';
+import 'Screens/geoLocator.dart';
 //import 'Screens/RegisterScreen.dart';
 import 'Util/resources.dart';
+import 'Util/recommendEngine.dart';
 
 Map <int, Map<dynamic, dynamic>> resultSheet = {};
 
@@ -13,11 +16,10 @@ void main() async  {
 
   //DB tools initializing
   await fbAdmin.initializeFirebase();
-  //await authAdmin.createUser(type: "Lawyers", emailAddress: "sendinu@mail.com", password: "pass12", dataSheet: {"data": "empty ne"});
-  //print(await authAdmin.signInUser(emailAddr: "sendinu@mail.com", Passwd: "pass123"));
-  //--------------------------------
-  // print(resultSheet[1]);
-
+  await userLocation.inititalizeLocation(); // takes the locatin detials
+  print("User Cords : [${userLocation.Lattitude} : ${userLocation.Longitude}]");
+  print("cordDiff : ${userLocation.cordDiffernce}");
+  await RecommendEngine();
   runApp(MyApp());
 }
 
@@ -42,6 +44,12 @@ class MyApp extends StatelessWidget {
 class HomeScreen extends StatelessWidget {
 
   final TextEditingController _usernameController = TextEditingController();
+
+
+
+  HomeScreen() {
+
+  }
 
   @override
   Widget build(BuildContext context) {

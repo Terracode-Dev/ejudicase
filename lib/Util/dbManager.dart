@@ -5,17 +5,61 @@ import 'package:flutter/material.dart';
 import 'package:bcrypt/bcrypt.dart';
 import '../firebase_options.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:geolocator/geolocator.dart';
 
 //----------- single object to use thrugout after imports---------------
 final FirebaseManager fbAdmin = FirebaseManager();
 final AuthManager authAdmin = AuthManager();
+final userLocData userLocation = userLocData();
+
 
 //-----------Object Tools End--------------
 
 String hashPassword(String pass) {
   return BCrypt.hashpw(pass, BCrypt.gensalt());
 }
+//---- Location Details ----
+class userLocData {
+  late double Longitude;
+  late double Lattitude;
+  late double cordDiffernce;
+  late double maxLattitude;
+  late double minLattitude;
+  late double maxLongitude;
+  late double minLongitude;
 
+  Future<void> inititalizeLocation () async {
+      bool serviceEnabled;
+      LocationPermission permission;
+      // Check if location services are enabled.
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        return Future.error('Location services are disabled.');
+      }
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return Future.error('Location permissions are denied');
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+      Position locate = await Geolocator.getCurrentPosition();
+      this.Lattitude = locate.latitude;
+      this.Longitude = locate.longitude;
+
+      double Guessdistance = Geolocator.distanceBetween(this.Lattitude, this.Longitude, this.Lattitude + 0.1, this.Longitude);
+      this.cordDiffernce = (0.1 / Guessdistance) * 5000; // 5000m means 5km radiuss
+      this.maxLattitude = this.Lattitude +  this.cordDiffernce;
+      this.minLattitude = this.Lattitude - this.cordDiffernce;
+      this.maxLongitude = this.Longitude + this.cordDiffernce;
+      this.minLongitude = this.Longitude - this.cordDiffernce;
+  }
+}
 
 //------AUTH-----
 //Auth Manager [Mongo and FireStore] TODO: use this.methods inside
@@ -120,6 +164,10 @@ class FirebaseManager {
       rethrow;
     }
   }
+
+
+
+
 
   // Example method to retrieve all documents from a collection
   Future<Map<int, Map<dynamic, dynamic>>> retrieveAllData(String collectionPath) async {

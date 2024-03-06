@@ -14,6 +14,7 @@ Map<String, TextEditingController> dataSheet = {
 
 
 class RegisterScreen extends StatefulWidget {
+  @override
   _registerScreenState createState() => _registerScreenState();
 }
 
@@ -21,7 +22,6 @@ class _registerScreenState extends State<RegisterScreen> {
 
   int currentPageIndex = 0;
   bool _isSwitched = false;
-
 
 @override
   Widget build(BuildContext context) {
@@ -177,7 +177,7 @@ class _registerScreenState extends State<RegisterScreen> {
                   Checkbox(
                     value: false,
                     onChanged: (bool? value) {
-                      value : true;
+                      value = true;
                     },
                   ),
                   Expanded(
@@ -192,9 +192,9 @@ class _registerScreenState extends State<RegisterScreen> {
                 onPressed: () {
                   //TODO : Add 2 controllers and prepare the DataSheet
                   if (_isSwitched) {
-                    authAdmin.createUser(type: "Lawyers", emailAddress: emailController.text, password: passwordController.text, dataSheet: dataSheet)
+                    authAdmin.createUser(type: "Lawyers", emailAddress: dataSheet["email"].text, password: passwordController.text, dataSheet: dataSheet);
                   } else {
-                    authAdmin.createUser(type: "users", emailAddress: emailController.text, password: passwordController.text, dataSheet: dataSheet)
+                    authAdmin.createUser(type: "users", emailAddress: emailController.text, password: passwordController.text, dataSheet: dataSheet);
                   }
                 },
                 child: Text('Next'),

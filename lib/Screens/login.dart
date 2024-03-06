@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../Util/dbManager.dart';
 import 'profile.dart';
 import '../Util/resources.dart';
-import 'RegisterScreen.dart';
+//import 'RegisterScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -88,7 +88,7 @@ class _loginpageState extends State<LoginScreen> {
                 onPressed: () async {
                   int authStatus = await authAdmin.signInUser(emailAddr: _emailController.text , Passwd: _passwordController.text);
                   if (authStatus == 1) {
-                    print("user AUthenticated");
+                    print("user Authenticated");
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Profile()),
@@ -104,7 +104,7 @@ class _loginpageState extends State<LoginScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Profile()));
                 },
                 child: Text('Don\'t have an account? Register'),
               ),

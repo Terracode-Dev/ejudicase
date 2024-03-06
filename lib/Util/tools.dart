@@ -5,6 +5,8 @@ enum imgType {
   local
 }
 
+
+
 Image getImage({required imgType type, required String sourcePath, double width = 20, double height = 20}) {
   if (type == imgType.network) {
     return Image.network(
@@ -18,3 +20,8 @@ Image getImage({required imgType type, required String sourcePath, double width 
   }
 
 }
+
+
+
+
+
