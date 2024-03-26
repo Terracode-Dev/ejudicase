@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Util/dbManager.dart';
 import 'profile.dart';
@@ -86,16 +87,22 @@ class _loginpageState extends State<LoginScreen> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  int authStatus = await authAdmin.signInUser(emailAddr: _emailController.text , Passwd: _passwordController.text);
-                  if (authStatus == 1) {
-                    print("user Authenticated");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profile()),
-                    );
-                  } else if (authStatus == 0) {
-                    changeInvalidEntryVisibility();
-                  }
+                  // int authStatus = await authAdmin.signInUser(emailAddr: _emailController.text , Passwd: _passwordController.text);
+                  // if (authStatus == 1) {
+                  //   print("user Authenticated");
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => Profile()),
+                  //   );
+                  // } else if (authStatus == 0) {
+                  //   changeInvalidEntryVisibility();
+                  // }
+
+
+
+                  UserCredential user = await authAdmin.signInWithGoogle();
+                  print("user : $user.user?.email");
+
                 },
                 child: Text('Login', style: TextStyle(color: ColourStack["text_1"])),
                 style: ButtonStyle(

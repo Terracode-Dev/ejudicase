@@ -6,6 +6,8 @@ import 'package:bcrypt/bcrypt.dart';
 import '../firebase_options.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 
 //----------- single object to use thrugout after imports---------------
 final FirebaseManager fbAdmin = FirebaseManager();
@@ -67,6 +69,9 @@ class AuthManager {
 
   static FirebaseAuth fbAuth = FirebaseAuth.instance;
 
+
+
+
   Future<int> signInUser({required String emailAddr, required String Passwd }) async {
     try {
       final credential = await fbAuth.signInWithEmailAndPassword(
@@ -87,6 +92,8 @@ class AuthManager {
     }
 
   }
+
+
 
   Future<void> signOutUser () async {
     await fbAuth.signOut();
@@ -115,7 +122,29 @@ class AuthManager {
       print(e);
     }
   }
+
+
+  Future<UserCredential> signInWithGoogle() async {
+
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth = await googleUser
+        ?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
 }
+
 //---- FIrebase methods------
 class FirebaseManager {
 
@@ -129,6 +158,10 @@ class FirebaseManager {
     );
     db = FirebaseFirestore.instance;
   }
+
+
+
+
 
   Future<int> getDocCount(String collectionName) async {
     try {

@@ -22,7 +22,7 @@ void main() async  {
   //print("User Cords : [${userLocation.Lattitude} : ${userLocation.Longitude}]");
   //print("cordDiff : ${userLocation.cordDiffernce}");
   recommendations = await RecommendEngine();
-  var searchResults = await SearchEngine("sandhi push");
+  var searchResults = await SearchEngine(query : "sandhi push");
 
 
   runApp(MyApp());
